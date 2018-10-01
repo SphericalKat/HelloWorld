@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.firehound.helloworld">
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -16,8 +17,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainIntroActivity"
-            android:theme="@style/Theme.Intro"/>
+        <activity
+            android:name=".MainIntroActivity"
+            android:theme="@style/Theme.Intro" />
+        <activity android:name=".SignInActivity"/>
     </application>
 
 </manifest>
