@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.switchFragment{
     private FirebaseAuth firebaseAuth;
     public static String PREF_KEY = "org.firehound.helloworld.PREF_KEY";
     public static int REQ_CODE = 420;
@@ -73,5 +73,13 @@ public class MainActivity extends AppCompatActivity {
                 PreferenceManager.getDefaultSharedPreferences(this).edit().putBoolean(PREF_KEY,true).apply();
             }
         }
+    }
+
+    @Override
+    public void onSelectedSwitchFragment(Fragment fragment) {
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_framelayout, fragment).commit();
+        BottomNavigationView view = findViewById(R.id.bottomnav);
+        view.setSelectedItemId(R.id.results);
+
     }
 }
