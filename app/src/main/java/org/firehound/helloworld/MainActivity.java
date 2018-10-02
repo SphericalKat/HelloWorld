@@ -3,16 +3,20 @@ package org.firehound.helloworld;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
-    private String uid;
     private FirebaseAuth firebaseAuth;
     public static String PREF_KEY = "org.firehound.helloworld.PREF_KEY";
     public static int REQ_CODE = 420;
+    public static String userid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.AppTheme); //Switch back to regular theme after splash screen
         setContentView(R.layout.activity_main);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_framelayout, new HomeFragment()).commit();
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomnav);
+        BottomNavigationView.OnNavigationItemSelectedListener listener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Fragment selectedFragment = null;
+                switch (item.getItemId()) {
+                    case R.id.home_nav:
+                        selectedFragment = new HomeFragment();
+                        break;
+                    case R.id.results:
+                        selectedFragment = new ResultsFragment();
+                        break;
+                }
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_framelayout, selectedFragment).commit();
+                return true;
+            }
+        };
+        bottomNavigationView.setOnNavigationItemSelectedListener(listener);
 
         boolean firstStart = PreferenceManager.getDefaultSharedPreferences(this).getBoolean(PREF_KEY, true);
         if (firstStart) {
@@ -30,13 +54,12 @@ public class MainActivity extends AppCompatActivity {
         if (firebaseAuth.getCurrentUser() == null) {
             startActivity(new Intent(this, SignInActivity.class));
         }
-
-        //If it's the app's first start, start the intro activity
-
         Intent signInIntent = getIntent();
         if (signInIntent.getExtras() != null) {
-            uid = signInIntent.getExtras().getString("uid");
-            Toast.makeText(this, "Welcome, " + uid, Toast.LENGTH_SHORT).show();
+            userid = signInIntent.getExtras().getString("uid");
+            Toast.makeText(this, "Welcome, " + userid, Toast.LENGTH_SHORT).show();
+        } else if (firebaseAuth.getCurrentUser() != null) {
+            userid = firebaseAuth.getCurrentUser().getUid();
         }
 
     }
